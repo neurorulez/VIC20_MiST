@@ -57,7 +57,8 @@ module vic20_mist
 
 `ifdef DEMISTIFY
    input         PS2_CLK_IN,
-	input         PS2_DAT_IN,
+   input         PS2_DAT_IN,
+
    input  [64:0] C64_KEYS,
    input         TAPE_BUTTON_N,
 	input         IEC_ATN_I,
@@ -66,6 +67,8 @@ module vic20_mist
 	output        IEC_ATN_O,
 	output        IEC_DATA_O,
 	output        IEC_CLK_O,
+	output [15:0] DAC_L,
+	output [15:0] DAC_R,
 `endif
    input         UART_RX,
    output        UART_TX
@@ -630,6 +633,9 @@ wire [15:0] vic_audio, vic_audio_filtered;
 wire [15:0] audio_sel = st_audio_filter ? vic_audio_filtered : vic_audio;
 wire [15:0] cass_audio = { (~cass_read | (cass_write & ~cass_motor & ~cass_sense)), 12'd0 };  // silence cass_write when motor is off because bit is in common with keyboard
 wire [15:0] audio_out = st_tape_sound ? audio_sel + cass_audio : audio_sel;
+
+assign DAC_L = audio_sel;
+assign DAC_R = audio_sel;
 
 sigma_delta_dac #(15) dac_l
 (
