@@ -44,14 +44,14 @@ _autoboot:
 	ldinc	r6
 	mr	r7
 
-	.section	.data
+	.section	.data.1
 	.align	4
 	.global	_bootrom_name
 _bootrom_name:
 						// Declaring from tree
 						// static
 	.ref	l1
-	.section	.rodata
+	.section	.rodata.2
 	.align	4
 l1:
 	.byte	86

@@ -571,9 +571,9 @@
 0x000027f6    l22
 0x00002800 Section: overrides.o,.text.0
 0x00002800    _autoboot
-0x0000280e Section: overrides.o,.data
+0x0000280e Section: overrides.o,.data.1
 0x00002810    _bootrom_name
-0x00002814 Section: overrides.o,.rodata
+0x00002814 Section: overrides.o,.rodata.2
 0x00002814    l1
 0x00002820 Section: <internal>,__ctors_start__
 0x00002820    __ctors_start__
