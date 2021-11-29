@@ -26,4 +26,4 @@ set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) memories/g
 set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) pll_reconfig.qip]
 # set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) rom_reconfig_pal.qip]
 # set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) rom_reconfig_ntsc.qip]
-#set_global_assignment -name SDC_FILE [file join $::quartus(qip_path) vic20.sdc]
+set_global_assignment -name SDC_FILE [file join $::quartus(qip_path) vic20.sdc]
