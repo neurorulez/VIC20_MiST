@@ -634,8 +634,8 @@ wire [15:0] audio_sel = st_audio_filter ? vic_audio_filtered : vic_audio;
 wire [15:0] cass_audio = { (~cass_read | (cass_write & ~cass_motor & ~cass_sense)), 12'd0 };  // silence cass_write when motor is off because bit is in common with keyboard
 wire [15:0] audio_out = st_tape_sound ? audio_sel + cass_audio : audio_sel;
 
-assign DAC_L = audio_sel;
-assign DAC_R = audio_sel;
+assign DAC_L = audio_out;
+assign DAC_R = audio_out;
 
 sigma_delta_dac #(15) dac_l
 (
