@@ -84,7 +84,7 @@ localparam TAP_MEM_START = 22'h20000;
 localparam CONF_STR =
 {
     "VIC20;PRGCRTTAP;",
-    "S,D64,Mount Disk;",
+    "S0U,D64,Mount Disk;",
     "TC,Play/Stop TAP;",
     "OD,Tape sound,Off,On;",
     "O3,Video,PAL,NTSC;",
@@ -326,7 +326,7 @@ user_io #(.STRLEN($size(CONF_STR)>>3)) user_io
     .sd_conf(0),
     .sd_sdhc(1),
     .img_mounted(img_mounted),
-	 .img_size(img_size)
+    .img_size(img_size)
 );
 
 wire  [7:0] col_in;
