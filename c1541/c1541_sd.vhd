@@ -188,10 +188,7 @@ begin
     c1541rom_clk    => c1541rom_clk,
     c1541rom_addr   => c1541rom_addr,
     c1541rom_data   => c1541rom_data,
-    c1541rom_wr     => c1541rom_wr,
-
-	 dbg_adr_fetch => dbg_adr_fetch,
-	 dbg_cpu_irq   => open
+    c1541rom_wr     => c1541rom_wr
   );
 
 floppy : entity work.gcr_floppy
