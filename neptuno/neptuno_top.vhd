@@ -161,10 +161,10 @@ COMPONENT  vic20_mist
 		LED      : out std_logic;
 		PS2_CLK_IN : in std_logic;
 		PS2_DAT_IN : in std_logic;
-		C64_KEYS   : in std_logic_vector(64 downto 0);
-		TAPE_BUTTON_N : in std_logic;
+		C64_KEYS   : in std_logic_vector(64 downto 0) :=  (others=>'1');
+		TAPE_BUTTON_N : in std_logic := '1';
 		DAC_L    : out std_logic_vector(15 downto 0);
-	    DAC_R    : out std_logic_vector(15 downto 0)
+	   DAC_R    : out std_logic_vector(15 downto 0)
 
 	);
 END COMPONENT;
@@ -313,7 +313,7 @@ guest: COMPONENT  vic20_mist
 		SDRAM_CKE => DRAM_CKE,
 		
 		UART_TX  => open,
-		UART_RX  => AUDIO_INPUT,
+		UART_RX  => not AUDIO_INPUT,
 		
 --		SPI_SD_DI => sd_miso,
 		SPI_DO => spi_fromguest,
