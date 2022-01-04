@@ -6,6 +6,7 @@ PROJECTTOROOT=../
 BOARD=
 ROMSIZE1=8192
 ROMSIZE2=4096
+STACKSIZE=320
 
 all: $(DEMISTIFYPATH)/site.template $(DEMISTIFYPATH)/site.mk $(SUBMODULES) firmware init compile tns mist
 # Use the file least likely to change within DeMiSTify to detect submodules!
@@ -30,11 +31,11 @@ $(SUBMODULES): $(DEMISTIFYPATH)/EightThirtyTwo/Makefile
 
 .PHONY: firmware
 firmware: $(SUBMODULES)
-	make -C firmware -f ../$(DEMISTIFYPATH)/firmware/Makefile DEMISTIFYPATH=../$(DEMISTIFYPATH) ROMSIZE1=$(ROMSIZE1) ROMSIZE2=$(ROMSIZE2)
+	make -C firmware -f ../$(DEMISTIFYPATH)/firmware/Makefile DEMISTIFYPATH=../$(DEMISTIFYPATH) STACKSIZE=$(STACKSIZE) ROMSIZE1=$(ROMSIZE1) ROMSIZE2=$(ROMSIZE2)
 
 .PHONY: firmware_clean
 firmware_clean: $(SUBMODULES)
-	make -C firmware -f ../$(DEMISTIFYPATH)/firmware/Makefile DEMISTIFYPATH=../$(DEMISTIFYPATH) ROMSIZE1=$(ROMSIZE1) ROMSIZE2=$(ROMSIZE2) clean
+	make -C firmware -f ../$(DEMISTIFYPATH)/firmware/Makefile DEMISTIFYPATH=../$(DEMISTIFYPATH) clean
 
 .PHONY: init
 init:
@@ -48,11 +49,17 @@ compile:
 clean:
 	make -f $(DEMISTIFYPATH)/Makefile DEMISTIFYPATH=$(DEMISTIFYPATH) PROJECTTOROOT=$(PROJECTTOROOT) PROJECTPATH=$(PROJECTPATH) PROJECTS=$(PROJECT) BOARD=$(BOARD) clean
 
+.PHONY: implicit
+implicit:
+	@for BOARD in ${BOARDS}; do \
+		grep -r implicit $$BOARD/output_files/*.rpt || echo -n ; \
+	done
+
 .PHONY: tns
 tns:
 	@for BOARD in ${BOARDS}; do \
 		echo $$BOARD; \
-		grep -r Design-wide\ TNS $$BOARD/*.rpt; \
+		grep -r Design-wide\ TNS $$BOARD/output_files/*.rpt; \
 	done
 
 .PHONY: mist

@@ -162,6 +162,8 @@ architecture rtl of chameleon64_top is
 	signal usart_rx : std_logic:='1'; -- Safe default
 	signal ir_data : std_logic;
 
+	signal guest_led : std_logic;
+
 -- Debounced buttons
 	signal menu_button_n : std_logic;
 	signal freeze_button_n : std_logic;
@@ -183,8 +185,6 @@ architecture rtl of chameleon64_top is
 	signal blu_dithered :unsigned(7 downto 0);
 	signal hsync_n_dithered : std_logic;
 	signal vsync_n_dithered : std_logic;
-	
-	signal act_led : std_logic;
 
 	signal iec_atn_in : std_logic;
 	signal iec_dat_in : std_logic;
@@ -349,6 +349,7 @@ rtc_cs<='0';
 --		iec_srq_in => iec_srq_in	
 	);
 
+	rs232_rxd <= '1';
 
 	-- Input mapping
 
@@ -403,7 +404,7 @@ rtc_cs<='0';
 --		CLOCK_27 => clk8&clk8, -- Comment out one of these lines to match the guest core.
 		CLOCK_27 => clk8,
 --		RESET_N => reset_n,
-		LED => led_red,
+		LED => guest_led,
 		
 		-- SDRAM
 		SDRAM_DQ => ram_data,
@@ -520,6 +521,7 @@ rtc_cs<='0';
 		intercept => intercept
 	);
 
-led_green<=(not act_led) and not spi_ss4;
+led_red <= not guest_led;
+led_green <= not spi_ss4;
 
 end architecture;

@@ -63,6 +63,7 @@ entity VIC20 is
     i_sysclk              : in    std_logic;  -- comes from CLK_A via DCM (divided by 4)
     i_sysclk_en           : in    std_logic;  -- 8.867236 MHz (PAL),
                                               -- 7.15909 (NTSC) enable signal
+    i_pause               : in    std_logic;  -- Pause CPU while loading ROMS. 
     i_reset               : in    std_logic;
     i_pal                 : in    std_logic;
     -- serial bus pins
@@ -106,7 +107,13 @@ entity VIC20 is
     o_extmem_addr         : out   std_logic_vector(15 downto 0);
     i_extmem_data         : in    std_logic_vector(7 downto 0);
     o_extmem_data         : out   std_logic_vector(7 downto 0);
-    
+    o_rom_sel             : out   std_logic;
+	 o_blk123_sel          : out   std_logic;
+	 o_blk5_sel            : out   std_logic;
+	 o_ram123_sel          : out   std_logic;
+	 o_io2_sel             : out   std_logic;
+	 o_io3_sel             : out   std_logic;
+
     o_p2_h                : out   std_logic;
     
     -- you may leave this disconnected if not required
@@ -327,7 +334,7 @@ begin
       port map (
           Mode    => "00",
           Res_n   => reset_l_sampled,
-          Enable  => c_ena,
+          Enable  => c_ena and not i_pause,
           Clk     => i_sysclk,
           Rdy     => '1',
           Abort_n => '1',
@@ -439,7 +446,7 @@ begin
           highpass_g   => false,
           R_ohms_g     => 1000,      -- 1kOhms   \  LP on PCB
           C_p_farads_g => 100000,    -- 100 nF   /  with ~1.6kHz fg
-          fclk_hz_g => 250000, -- we use the sysclk / 4 (clk_ena freq)
+          fclk_hz_g => 250000, -- we use a tick of 250KHz
           cwidth_g  => 14,
           dwidthi_g => 16,
           dwidtho_g => 16
@@ -591,6 +598,8 @@ begin
       when "111" => blk_sel_l <= "01111111"; -- kernal    ($E000...)
       when others => null;
     end case;
+	 o_blk123_sel<=(not c_addr(15)) and (c_addr(14) or c_addr(13));
+	 o_blk5_sel<=not blk_sel_l(5);
   end process;
 
   p_v_mux : process(c_addr, c_dout, c_rw_l, p2_h, vic_addr, v_data_read_mux,
@@ -627,6 +636,7 @@ begin
         when others => null;
       end case;
     end if;
+	 o_ram123_sel<=not (ram_sel_l(1) and ram_sel_l(2) and ram_sel_l(3));
   end process;
 
   p_vic_din_mux : process(p2_h, col_ram_dout, v_data)
@@ -939,12 +949,19 @@ begin
                   '1' when blk_sel_l(6)='0' and I_EXTERNAL_ROM = '1' else -- BASIC ROM
                   '1' when blk_sel_l(7)='0' and I_EXTERNAL_ROM = '1' else -- KERNAL ROM
                   '1' when blk_sel_l(5)='0' and I_CART_EN='1' else
+                  '1' when io_sel_l(2)='0' else
+                  '1' when io_sel_l(3)='0' else
                   '0';
   o_extmem_sel <= extmem and p2_h;
   o_extmem_r_wn <= c_rw_l or not blk_sel_l(6) or not blk_sel_l(7) or ( not(blk_sel_l(5)) and I_CART_RO ); -- disable write if we emulate a ROM on $A000
   o_extmem_addr <= c_addr(15 downto 0);
   expansion_din <= i_extmem_data;
   o_extmem_data <= c_dout;
+
+  -- Extra signals needed for MegaCart emulation
+  o_rom_sel <= '1' when (blk_sel_l(6)='0' or blk_sel_l(7)='0') and I_EXTERNAL_ROM='1' else '0';
+  o_io2_sel <= not io_sel_l(2);
+  o_io3_sel <= not io_sel_l(3);
 
   -- CPU debugging via external lines
 

@@ -24,7 +24,8 @@ here, the number of units defaults to 4. */
 #undef CONFIG_FILEBOOKMARKS 6
 
 /* Keyboard-based Joystick emulation */
-#undef CONFIG_JOYKEYS
+#define CONFIG_JOYKEYS
+#define CONFIG_JOYKEYS_TOGGLE
 
 /* Send key events via the mist_io block. If the core can support
    a PS/2 keyboard directly then that's probably a better option. */
@@ -38,6 +39,10 @@ here, the number of units defaults to 4. */
 /* Do we require an autoboot ROM, and thus should we notify the user if it's not found? */
 #define ROM_REQUIRED
 #define ROM_FILENAME "VIC20   ROM"
+
+/* Do we support configuration files? */
+#define CONFIG_SETTINGS
+#define CONFIG_SETTINGS_FILENAME "VIC20   CFG"
 
 #endif
 
